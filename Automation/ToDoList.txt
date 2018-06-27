@@ -1,0 +1,5 @@
+
+
+Firefox driver only works with old versions of Firefox.  Revert install or find solution.
+
+Have not tried IE driver yet.

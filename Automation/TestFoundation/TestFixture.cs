@@ -13,7 +13,7 @@ namespace TestFoundation
 
         public void AddSetting(string setting, string value)
         {
-            _testSettings.Add(setting, value);
+            _testSettings.Add(setting.ToLower(), value);
         }
 
         public string GetSetting(string setting)

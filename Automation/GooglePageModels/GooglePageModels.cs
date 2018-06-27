@@ -42,6 +42,16 @@ namespace GooglePageModels
             }
         }
 
+        public override void Go()
+        {
+            GoToUrl("http://www.google.com");
+        }
+
+        public override bool IsAt()
+        {
+            return Driver.Title.Equals("Google");
+        }
+
         /// <summary>
         /// Enters text in the search box and clicks search
         /// </summary>
@@ -60,6 +70,16 @@ namespace GooglePageModels
         public GoogleResultsPage() { }
 
         public GoogleResultsPage(UiTestFixture testFixture) : base(testFixture) { }
+
+        public override void Go()
+        {
+            GoToUrl("http://www.google.com");
+        }
+
+        public override bool IsAt()
+        {
+            return true;
+        }
     }
 
 }

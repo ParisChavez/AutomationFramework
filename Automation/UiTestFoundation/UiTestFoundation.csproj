@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="PageModel.cs" />
     <Compile Include="SeleniumExtensions.cs" />
+    <Compile Include="UiConfiguration.cs" />
     <Compile Include="UiTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebFormObjects.cs" />
@@ -68,8 +69,12 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Content Include="chromedriver.exe">
+    <Content Include="Drivers\chromedriver.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Drivers\geckodriver.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

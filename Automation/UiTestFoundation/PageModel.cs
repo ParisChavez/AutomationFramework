@@ -38,6 +38,10 @@ namespace UiTestFoundation
             }
         }
 
+        public abstract void Go();
+
+        public abstract bool IsAt();
+
         protected UiTestFixture TestFixture { get; private set; }
 
         public PageModel() { }

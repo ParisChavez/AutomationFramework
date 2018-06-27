@@ -15,7 +15,7 @@ namespace ExampleTests
     {
         public GoogleUITests() : base()
         {
-            Config.AddSetting("Browse", "Chrome");
+            Config.AddSetting("Browser", "chrome");
             Config.AddSetting("device", "desktop");
         }
 
@@ -39,7 +39,7 @@ namespace ExampleTests
         public void GoogleTitleContainsSearchTerm()
         {
             GoogleHomepage homepage = CreateWebPageModel<GoogleHomepage>();
-            homepage.GoToUrl("http://www.google.com");
+            homepage.Go();
             GoogleResultsPage resultsPage = homepage.EnterTextAndSearch("HP Lovecraft");
 
             Assert.IsTrue(resultsPage.Title.Contains("HP Lovecraft"));
