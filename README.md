@@ -1,6 +1,6 @@
 # AutomationFramework
 Automation framework based on Nunit and Selenium, written in C#
 
-My attempt at created a test framwork that can support API and UI test cases, while remaining modular.
+My attempt at creating a test framwork that can support API and UI test cases, while remaining modular, and emphasizing behavior based test scripts.
 
-This has been created for my own education and experimental purposes.  This code is not associated with any place I working, or have worked.
+This has been created for my own educational and experimental purposes, and is not related to any company or organization.
