@@ -18,7 +18,7 @@ namespace TestFoundation
 
         public string GetSetting(string setting)
         {
-            return _testSettings[setting];
+            return _testSettings[setting.ToLower()];
         }
     }
 

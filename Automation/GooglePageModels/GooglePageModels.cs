@@ -22,7 +22,14 @@ namespace GooglePageModels
             {
                 if (_searchBox == null)
                 {
-                    _searchBox = new TextBox(Driver, By.Id("lst-ib"));
+                    if (TestFixture.UiSettings.Device == Device.Phone)
+                    {
+                        _searchBox = new TextBox(Driver, By.ClassName("gLFyf"));
+                    }
+                    else
+                    {
+                        _searchBox = new TextBox(Driver, By.Id("lst-ib"));
+                    }
                 }
 
                 return _searchBox;

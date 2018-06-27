@@ -9,6 +9,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
+using OpenQA.Selenium.Remote;
 
 namespace UiTestFoundation
 {
@@ -37,12 +38,19 @@ namespace UiTestFoundation
             UiSettings = new UiConfiguration(this);
         }
 
-        [OneTimeSetUp]
-        public void UiTestFixtureSetup()
+        private void InitializeWebDriver()
         {
             if (UiSettings.Browser == Browser.Chrome)
             {
-                Driver = new ChromeDriver();
+                ChromeOptions options = new ChromeOptions();
+                options.AddArgument("--disable-extensions");
+                options.AddArgument("disable-infobars");
+
+                if (UiSettings.Device != Device.Desktop)
+                {
+                    options.EnableMobileEmulation(UiSettings.GetDeviceEmulationString(UiSettings.Device));
+                }
+                Driver = new ChromeDriver(/* string.Empty,*/ options/*, TimeSpan.FromSeconds(120)*/);
             }
             else if (UiSettings.Browser == Browser.Firefox)
             {
@@ -52,7 +60,14 @@ namespace UiTestFoundation
             {
                 Driver = new InternetExplorerDriver();
             }
+        }
 
+        [OneTimeSetUp]
+        public void UiTestFixtureSetup()
+        {
+            InitializeWebDriver();
+
+            //Driver.Manage().Cookies.DeleteAllCookies();
             Driver.Manage().Window.Maximize();
         }
 
@@ -65,7 +80,8 @@ namespace UiTestFoundation
         [TearDown]
         public void UiTestTearDown()
         {
-            int i = 10;
+            //Driver.Close();
+            Driver.Manage().Cookies.DeleteAllCookies();
         }
 
         [OneTimeTearDown]

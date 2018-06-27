@@ -54,5 +54,19 @@ namespace UiTestFoundation
                 }
             }
         }
+
+        public string GetDeviceEmulationString(Device device)
+        {
+            switch (device)
+            {
+                case Device.Tablet:
+                    return "iPad";
+                case Device.Phone:
+                    return "iPhone 6";
+                case Device.Desktop:
+                default:
+                    return "none";
+            }
+        }
     }
 }
