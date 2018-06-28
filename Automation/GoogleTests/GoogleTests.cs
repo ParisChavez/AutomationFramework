@@ -38,7 +38,7 @@ namespace ExampleTests
         [Test]
         public void GoogleTitleContainsSearchTerm()
         {
-            Log.Info("This is Log4Net");
+            Log.Info("This is Log4Net again");
             Console.WriteLine("This is console writeline");
             GoogleHomepage homepage = CreateWebPageModel<GoogleHomepage>();
             homepage.Go();
