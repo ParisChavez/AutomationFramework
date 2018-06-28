@@ -45,6 +45,7 @@ namespace UiTestFoundation
                 ChromeOptions options = new ChromeOptions();
                 options.AddArgument("--disable-extensions");
                 options.AddArgument("disable-infobars");
+                options.AddArgument("--no-sandbox");
 
                 if (UiSettings.Device != Device.Desktop)
                 {
