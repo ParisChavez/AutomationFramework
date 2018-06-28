@@ -18,7 +18,8 @@ namespace TestFoundation
         /// </summary>
         public Logger()
         {
-            var log4NetConfig = new FileInfo("log4net.config");
+            string applicationDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var log4NetConfig = new FileInfo(applicationDir + @"\log4net.config");
             log4net.Config.XmlConfigurator.Configure(log4NetConfig);
         }
 
