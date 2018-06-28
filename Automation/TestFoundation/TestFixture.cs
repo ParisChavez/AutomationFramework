@@ -25,10 +25,12 @@ namespace TestFoundation
     public class TestFixture
     {
         public Configuration Config { get; protected set; }
+        public Logger Log;
 
         public TestFixture()
         {
             Config = new Configuration();
+            Log = new Logger();
         }
 
         [OneTimeSetUp]
