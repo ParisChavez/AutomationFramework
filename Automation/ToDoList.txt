@@ -3,3 +3,6 @@
 Firefox driver only works with old versions of Firefox.  Revert install or find solution.
 
 Have not tried IE driver yet.
+
+get configuration logic implemented for app.config and nunit parameters
+Get data driver support for text files and xml files
