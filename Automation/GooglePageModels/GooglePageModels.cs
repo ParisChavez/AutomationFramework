@@ -10,8 +10,6 @@ namespace GooglePageModels
 {
     public class GoogleHomepage : PageModel
     {
-        public GoogleHomepage() { }
-
         public GoogleHomepage(UiTestFixture testFixture) : base(testFixture) { }
 
         private TextBox _searchBox;
@@ -22,7 +20,7 @@ namespace GooglePageModels
             {
                 if (_searchBox == null)
                 {
-                    if (TestFixture.UiSettings.Device == Device.Phone)
+                    if (TestFixture.UiSettings.Device == TestDevice.Phone)
                     {
                         _searchBox = new TextBox(Driver, By.ClassName("gLFyf"));
                     }
@@ -74,8 +72,6 @@ namespace GooglePageModels
 
     public class GoogleResultsPage : PageModel
     {
-        public GoogleResultsPage() { }
-
         public GoogleResultsPage(UiTestFixture testFixture) : base(testFixture) { }
 
         public override void Go()

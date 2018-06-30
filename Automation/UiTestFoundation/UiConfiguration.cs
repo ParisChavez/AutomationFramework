@@ -16,7 +16,7 @@ namespace UiTestFoundation
 
         internal UiConfiguration(UiTestFixture testFixture) => _uiTestFixture = testFixture;
 
-        public Browser Browser
+        public TestBrowser Browser
         {
             get
             {
@@ -24,48 +24,66 @@ namespace UiTestFoundation
                 {
                     case "internetexplorer":
                     case "ie":
-                        return UiTestFoundation.Browser.IE;
+                        return UiTestFoundation.TestBrowser.IE;
 
                     case "firefox":
-                        return UiTestFoundation.Browser.Firefox;
+                        return UiTestFoundation.TestBrowser.Firefox;
 
                     case "chrome":
                     default:
-                        return UiTestFoundation.Browser.Chrome;
+                        return UiTestFoundation.TestBrowser.Chrome;
                 }
             }
         }
 
-        public Device Device
+        public TestDevice Device
         {
             get
             {
                 switch (_uiTestFixture.Config.GetSetting("Device").ToLower())
                 {
                     case "tablet":
-                        return UiTestFoundation.Device.Tablet;
+                        return UiTestFoundation.TestDevice.Tablet;
 
                     case "phone":
-                        return UiTestFoundation.Device.Phone;
+                        return UiTestFoundation.TestDevice.Phone;
 
                     case "desktop":
                     default:
-                        return UiTestFoundation.Device.Desktop;
+                        return UiTestFoundation.TestDevice.Desktop;
                 }
             }
         }
 
-        public string GetDeviceEmulationString(Device device)
+        public string GetDeviceEmulationString(TestDevice device)
         {
             switch (device)
             {
-                case Device.Tablet:
+                case TestDevice.Tablet:
                     return "iPad";
-                case Device.Phone:
+                case TestDevice.Phone:
                     return "iPhone 6";
-                case Device.Desktop:
+                case TestDevice.Desktop:
                 default:
                     return "none";
+            }
+        }
+
+        public int CommandTimeout
+        {
+            get
+            {
+                string timeoutStr = _uiTestFixture.Config.GetSetting("commandTimeout");
+                if (!string.IsNullOrEmpty(timeoutStr))
+                {
+                    int timeout;
+                    if (int.TryParse(timeoutStr, out timeout))
+                    {
+                        return timeout;
+                    }
+                }
+
+                return 120;
             }
         }
     }

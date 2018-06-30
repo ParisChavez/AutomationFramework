@@ -12,6 +12,8 @@ namespace UiTestFoundation
     // all page models will derive from this 
     public abstract class PageModel
     {
+        protected UiTestFixture TestFixture { get; private set; }
+
         protected IWebDriver Driver
         {
             get
@@ -42,13 +44,7 @@ namespace UiTestFoundation
 
         public abstract bool IsAt();
 
-        protected UiTestFixture TestFixture { get; private set; }
-
-        public PageModel() { }
-
         public PageModel(UiTestFixture testFixture) => TestFixture = testFixture;
-
-        internal void SetParentTestFixture(UiTestFixture testFixture) => TestFixture = testFixture;
 
         public void GoToUrl(string url) => Driver.Navigate().GoToUrl(url);
 

@@ -15,25 +15,16 @@ using System.IO;
 
 namespace UiTestFoundation
 {
-
-    public enum Browser { Chrome, Firefox, IE }
-    public enum Device { Desktop, Tablet, Phone }
+    public enum TestBrowser { Chrome, Firefox, IE }
+    public enum TestDevice { Desktop, Tablet, Phone }
 
     // all test case Fixtures will derive from this
     // has basic actions needed for UI testing
     // will contain webdriver
     public class UiTestFixture : TestFixture
     {
-
         public IWebDriver Driver { private set; get; }
         public UiConfiguration UiSettings { get; private set; }
-
-        public T CreateWebPageModel<T>() where T : PageModel, new()
-        {
-            T pageModel = new T();
-            pageModel.SetParentTestFixture(this);
-            return pageModel;
-        }
 
         public UiTestFixture() : base()
         {
@@ -42,26 +33,31 @@ namespace UiTestFoundation
 
         private void InitializeWebDriver()
         {
-            if (UiSettings.Browser == Browser.Chrome)
+            TimeSpan commandTimeout = TimeSpan.FromSeconds(UiSettings.CommandTimeout);
+            string driverDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Drivers"; // configurable?
+
+            if (UiSettings.Browser == TestBrowser.Chrome)
             {
                 ChromeOptions options = new ChromeOptions();
                 options.AddArgument("--disable-extensions");
                 options.AddArgument("disable-infobars");
                 options.AddArgument("--no-sandbox");
 
-                if (UiSettings.Device != Device.Desktop)
+                if (UiSettings.Device != TestDevice.Desktop)
                 {
                     options.EnableMobileEmulation(UiSettings.GetDeviceEmulationString(UiSettings.Device));
                 }
-                Driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Drivers", options, TimeSpan.FromSeconds(120));
+                Driver = new ChromeDriver(driverDir, options, commandTimeout);
             }
-            else if (UiSettings.Browser == Browser.Firefox)
+            else if (UiSettings.Browser == TestBrowser.Firefox)
             {
-                Driver = new FirefoxDriver();
+                FirefoxOptions options = new FirefoxOptions();
+                Driver = new FirefoxDriver(driverDir, options, commandTimeout);
             }
             else
             {
-                Driver = new InternetExplorerDriver();
+                InternetExplorerOptions options = new InternetExplorerOptions();
+                Driver = new InternetExplorerDriver(driverDir, options, commandTimeout);
             }
         }
 
