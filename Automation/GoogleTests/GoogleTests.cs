@@ -15,8 +15,6 @@ namespace ExampleTests
     {
         public GoogleUITests() : base()
         {
-            Config.AddSetting("Browser", "chrome");
-            Config.AddSetting("device", "phone");
         }
 
         /// <summary>

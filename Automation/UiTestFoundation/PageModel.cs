@@ -25,7 +25,7 @@ namespace UiTestFoundation
             }
         }
 
-        protected Configuration Config
+        protected TestConfiguration Config
         {
             get
             {

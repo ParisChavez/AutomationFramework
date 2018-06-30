@@ -10,6 +10,8 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Remote;
+using System.Reflection;
+using System.IO;
 
 namespace UiTestFoundation
 {
@@ -51,7 +53,7 @@ namespace UiTestFoundation
                 {
                     options.EnableMobileEmulation(UiSettings.GetDeviceEmulationString(UiSettings.Device));
                 }
-                Driver = new ChromeDriver(/* string.Empty,*/ options/*, TimeSpan.FromSeconds(120)*/);
+                Driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Drivers", options, TimeSpan.FromSeconds(120));
             }
             else if (UiSettings.Browser == Browser.Firefox)
             {
@@ -75,7 +77,7 @@ namespace UiTestFoundation
         [SetUp]
         public void UiTestSetup()
         {
-            int i = 10;
+            Log.Debug("Ui Setup Method");
         }
 
         [TearDown]
@@ -88,7 +90,6 @@ namespace UiTestFoundation
         [OneTimeTearDown]
         public void UiTestFixtureTearDown()
         {
-            int i = 10;
             Driver.Quit();
         }
     }

@@ -41,5 +41,14 @@ namespace TestFoundation
         {
             _log.Info(message, exception);
         }
+
+        /// <summary>
+        /// Write a Debug level message to the log
+        /// </summary>
+        /// <param name="message"></param>
+        public void Debug(object message)
+        {
+            _log.Debug(message);
+        }
     }
 }

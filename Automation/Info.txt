@@ -1,0 +1,7 @@
+
+Any app setting can equally be set via nunit command line.
+Command line takes priority if the same setting is set in both.
+
+Currently supported settings:
+Browser
+Device
