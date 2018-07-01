@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace UiTestFoundation
 {
+    public enum TestBrowser { Chrome, Firefox, IE }
+    public enum TestDevice { Desktop, Tablet, Phone }
+    public enum TakeScreenshot { Never, OnFail, Always}
+
     /// <summary>
     /// Class containing all UI test configuration
     /// will query TestFixtures config, app configs or database as needed
@@ -20,7 +24,7 @@ namespace UiTestFoundation
         {
             get
             {
-                switch (_uiTestFixture.Config.GetSetting("Browser").ToLower())
+                switch (_uiTestFixture.Config.GetSetting("Browser"))
                 {
                     case "internetexplorer":
                     case "ie":
@@ -84,6 +88,33 @@ namespace UiTestFoundation
                 }
 
                 return 120;
+            }
+        }
+
+        public string ScreenShotPath
+        {
+            get
+            {
+                return _uiTestFixture.Config.GetSetting("screenshotPath");
+            }
+        }
+
+        public TakeScreenshot SaveScreenshotSetting
+        {
+            get
+            {
+                switch (_uiTestFixture.Config.GetSetting("Screenshot").ToLower())
+                {
+                    case "onfail":
+                        return TakeScreenshot.OnFail;
+
+                    case "Always":
+                        return TakeScreenshot.Always;
+
+                    case "never":
+                    default:
+                        return TakeScreenshot.Never;
+                }
             }
         }
     }

@@ -50,5 +50,14 @@ namespace TestFoundation
         {
             _log.Debug(message);
         }
+
+        /// <summary>
+        /// Write an Error level message and exception message to the log
+        /// </summary>
+        /// <param name="message"></param>
+        public void Error(object message)
+        {
+            _log.Error(message);
+        }
     }
 }

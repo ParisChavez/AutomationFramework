@@ -37,7 +37,7 @@ namespace TestFoundation
             // If not there, return null;
             if (_testSettings.ContainsKey(setting))
             {
-                return _testSettings[setting.ToLower()];
+                return _testSettings[setting.ToLower()].ToLower();
             }
 
             // return null if key does not exist

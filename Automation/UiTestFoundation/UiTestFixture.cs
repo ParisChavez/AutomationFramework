@@ -12,12 +12,10 @@ using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Remote;
 using System.Reflection;
 using System.IO;
+using NUnit.Framework.Interfaces;
 
 namespace UiTestFoundation
 {
-    public enum TestBrowser { Chrome, Firefox, IE }
-    public enum TestDevice { Desktop, Tablet, Phone }
-
     // all test case Fixtures will derive from this
     // has basic actions needed for UI testing
     // will contain webdriver
@@ -61,6 +59,22 @@ namespace UiTestFoundation
             }
         }
 
+        public void SaveScreenshot(string saveLocation)
+        {
+            string testName = TestContext.CurrentContext.Test.MethodName;
+
+            try
+            {
+                Screenshot ss = ((ITakesScreenshot)Driver).GetScreenshot();
+                ss.SaveAsFile(saveLocation + $"{testName}.png", ScreenshotImageFormat.Png);
+            }
+            catch (Exception e)
+            {
+                Log.Error(e.Message);
+                throw;
+            }
+        }
+
         [OneTimeSetUp]
         public void UiTestFixtureSetup()
         {
@@ -79,8 +93,26 @@ namespace UiTestFoundation
         [TearDown]
         public void UiTestTearDown()
         {
-            //Driver.Close();
+
+            bool takeScreenshot = false;
+            if (UiSettings.SaveScreenshotSetting == TakeScreenshot.Always)
+            {
+                takeScreenshot = true;
+            }
+
+
+            if (UiSettings.SaveScreenshotSetting == TakeScreenshot.OnFail && TestContext.CurrentContext.Result.Outcome == ResultState.Failure)
+            {
+                takeScreenshot = true;
+            }
+
+            if (takeScreenshot)
+            {
+                SaveScreenshot(UiSettings.ScreenShotPath);
+            }
+
             Driver.Manage().Cookies.DeleteAllCookies();
+            Driver.Close();
         }
 
         [OneTimeTearDown]
