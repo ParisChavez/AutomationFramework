@@ -44,6 +44,18 @@ namespace ExampleTests
             Assert.IsTrue(resultsPage.Title.Contains("HP Lovecraft"));
         }
 
+        [TestCase("Paris Chavez")]
+        [TestCase("Paris Chávez")]
+        [TestCase("Rogue River")]
+        public void GoogleSearchSuccessful(string searchTerm)
+        {
+            GoogleHomepage homepage = new GoogleHomepage(this);
+            homepage.Go();
+            GoogleResultsPage resultsPage = homepage.EnterTextAndSearch(searchTerm);
+
+            Assert.IsTrue(resultsPage.Title.Contains(searchTerm));
+        }
+
         /// <summary>
         /// Will be run before each tests in this class
         /// </summary>

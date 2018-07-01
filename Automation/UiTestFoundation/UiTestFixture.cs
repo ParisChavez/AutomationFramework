@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TestFoundation;
 using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Remote;
 using System.Reflection;
 using System.IO;
 using NUnit.Framework.Interfaces;
@@ -112,7 +109,7 @@ namespace UiTestFoundation
             }
 
             Driver.Manage().Cookies.DeleteAllCookies();
-            Driver.Close();
+            //Driver.Close();
         }
 
         [OneTimeTearDown]
