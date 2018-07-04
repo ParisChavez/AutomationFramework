@@ -8,9 +8,13 @@ using OpenQA.Selenium.Support.UI;
 
 namespace UiTestFoundation
 {
+
+    /// <summary>
+    /// Abstract class for specific web form objects
+    /// </summary>
     public abstract class WebFormObject
     {
-        private IWebElement _element;
+        protected IWebElement _element;
         protected IWebElement Element
         {
             get
@@ -28,20 +32,17 @@ namespace UiTestFoundation
 
         public WebFormObject(IWebElement element) => Element = element;
 
-        public WebFormObject(IWebElement parentElement, By by) => Element = parentElement.FindElementNull(by);
-
-        public WebFormObject(IWebDriver driver, By by)
-        {
-            Element = driver.FindElementNull(by);
-        }
+        public WebFormObject(ISearchContext searchContext, By by) => Element = searchContext.FindElementNull(by);
 
         // include the following constructors in any derived classes, replacing the class name:
         /*
         public DerivedWebFormObject(IWebElement element) : base(element) { }
-        public DerivedWebFormObject(IWebElement parentElement, By by) : base(parentElement, by) { }
-        public DerivedWebFormObject(IWebDriver driver, By by) : base(driver, by) { }
+        public DerivedWebFormObject(ISearchContext searchContext, By by) : base(searchContext, by) { }
         */
 
+        /// <summary>
+        /// Checks if object exists on the webpage
+        /// </summary>
         public bool Exists
         {
             get
@@ -51,7 +52,15 @@ namespace UiTestFoundation
 
         }
 
+        /// <summary>
+        /// Checks if the object is displayed on the page
+        /// </summary>
         public bool Displayed
+        {
+            get { return Element != null && Element.Displayed; }
+        }
+
+        public bool Enabled
         {
             get { return Element != null && Element.Displayed; }
         }
@@ -63,8 +72,11 @@ namespace UiTestFoundation
     public class TextBox : WebFormObject
     {
         public TextBox(IWebElement element) : base(element) { }
+        /*
         public TextBox(IWebElement parentElement, By by) : base(parentElement, by) { }
         public TextBox(IWebDriver driver, By by) : base(driver, by) { }
+        */
+        public TextBox(ISearchContext searchContext, By by) : base(searchContext, by) { }
 
         public void SetText(string text)
         {
@@ -85,6 +97,31 @@ namespace UiTestFoundation
     /// <summary>
     /// Represents a Checkbox on a webpage
     /// </summary>
+    public class RadioButton : WebFormObject
+    {
+        public RadioButton(IWebElement element) : base(element) { }
+        public RadioButton(ISearchContext searchContext, By by) : base(searchContext, by) { }
+
+        public bool Selected
+        {
+            get
+            {
+                return Element.Selected;
+            }
+        }
+
+        /// <summary>
+        /// Clicks the radio button
+        /// </summary>
+        public void Click()
+        {
+            Element.Click();
+        }
+    }
+
+    /// <summary>
+    /// Represents a Checkbox on a webpage
+    /// </summary>
     public class CheckBox : WebFormObject
     {
         public CheckBox(IWebElement element) : base(element) { }
@@ -98,13 +135,20 @@ namespace UiTestFoundation
                 return Element.Selected;
             }
         }
+
+        /// <summary>
+        /// Clicks the checkbox
+        /// </summary>
+        public void Click()
+        {
+            Element.Click();
+        }
     }
 
     public class Button : WebFormObject
     {
         public Button(IWebElement element) : base(element) { }
-        public Button(IWebElement parentElement, By by) : base(parentElement, by) { }
-        public Button(IWebDriver driver, By by) : base(driver, by) { }
+        public Button(ISearchContext searchContext, By by) : base(searchContext, by) { }
 
         public void Click()
         {
@@ -161,9 +205,9 @@ namespace UiTestFoundation
 
         private void AssignSelectElement()
         {
-            if (Element != null)
+            if (_element != null)
             {
-                _selectElement = new SelectElement(Element);
+                _selectElement = new SelectElement(_element);
             }
         }
 

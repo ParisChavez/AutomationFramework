@@ -8,7 +8,7 @@ namespace UiTestFoundation
 {
     public enum TestBrowser { Chrome, Firefox, IE }
     public enum TestDevice { Desktop, Tablet, Phone }
-    public enum TakeScreenshot { Never, OnFail, Always}
+    public enum TakeScreenshot { Never, OnFail, Always }
 
     /// <summary>
     /// Class containing all UI test configuration

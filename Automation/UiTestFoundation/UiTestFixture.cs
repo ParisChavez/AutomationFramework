@@ -13,9 +13,11 @@ using NUnit.Framework.Interfaces;
 
 namespace UiTestFoundation
 {
-    // all test case Fixtures will derive from this
-    // has basic actions needed for UI testing
-    // will contain webdriver
+    /// <summary>
+    /// Base class for all UI test cases
+    /// basic actions needed for UI testing
+    /// will contain webdriver on a test fixture basis, not test basis
+    /// </summary>
     public class UiTestFixture : TestFixture
     {
         public IWebDriver Driver { private set; get; }
@@ -36,7 +38,7 @@ namespace UiTestFoundation
                 ChromeOptions options = new ChromeOptions();
                 options.AddArgument("--disable-extensions");
                 options.AddArgument("disable-infobars");
-                options.AddArgument("--no-sandbox");
+                //options.AddArgument("--no-sandbox");  // unsupported argument, was leaving cpu heavy chrome processes in memory after quit();
 
                 if (UiSettings.Device != TestDevice.Desktop)
                 {
@@ -76,8 +78,6 @@ namespace UiTestFoundation
         public void UiTestFixtureSetup()
         {
             InitializeWebDriver();
-
-            //Driver.Manage().Cookies.DeleteAllCookies();
             Driver.Manage().Window.Maximize();
         }
 
@@ -116,6 +116,7 @@ namespace UiTestFoundation
         public void UiTestFixtureTearDown()
         {
             Driver.Quit();
+            Driver.Dispose();
         }
     }
 }
