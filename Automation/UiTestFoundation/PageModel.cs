@@ -9,22 +9,18 @@ using TestFoundation;
 
 namespace UiTestFoundation
 {
-    // all page models will derive from this 
-    public abstract class PageModel
+    /// <summary>
+    /// used to represent chunks of html that need to be grouped together, such as: pages, popups, search results, records, iframes, etc.
+    /// </summary>
+    public abstract class HtmlBlob
     {
-        protected UiTestFixture TestFixture { get; private set; }
+        protected UiTestFixture TestFixture { get; set; }
+        protected ISearchContext SearchContext { get; set; }
 
-        protected IWebDriver Driver
+        public HtmlBlob(ISearchContext searchContext, UiTestFixture testFixture)
         {
-            get
-            {
-                if (TestFixture == null)
-                {
-                    throw new ArgumentException("Parent TextFixture was not set on object creation.");
-                }
-
-                return TestFixture.Driver;
-            }
+            SearchContext = searchContext;
+            TestFixture = testFixture;
         }
 
         protected TestConfiguration Config
@@ -39,12 +35,29 @@ namespace UiTestFoundation
                 return TestFixture.Config;
             }
         }
+    }
+
+    // all page models will derive from this 
+    public abstract class PageModel : HtmlBlob
+    {
+        protected IWebDriver Driver
+        {
+            get
+            {
+                if (TestFixture == null)
+                {
+                    throw new ArgumentException("Parent TextFixture was not set on object creation.");
+                }
+
+                return TestFixture.Driver;
+            }
+        }
 
         public abstract void Go();
 
         public abstract bool IsAt();
 
-        public PageModel(UiTestFixture testFixture) => TestFixture = testFixture;
+        public PageModel(UiTestFixture testFixture) : base(testFixture.Driver, testFixture) { }
 
         public void GoToUrl(string url) => Driver.Navigate().GoToUrl(url);
 

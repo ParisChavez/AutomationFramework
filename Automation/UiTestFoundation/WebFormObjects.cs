@@ -14,42 +14,16 @@ namespace UiTestFoundation
     /// </summary>
     public abstract class WebFormObject
     {
-        protected IWebElement _element;
-        protected IWebElement Element
+        protected IWebElement Element { get; set; }
+
+        public WebFormObject(IWebElement element)
         {
-            get
-            {
-                if (_element == null)
-                {
-                    throw new NoSuchElementException("Object does not exist");
-                }
-
-                return _element;
-            }
-
-            set => _element = value;
+            Element = element ?? throw new NoSuchElementException("Object does not exist");
         }
 
-        public WebFormObject(IWebElement element) => Element = element;
-
-        public WebFormObject(ISearchContext searchContext, By by) => Element = searchContext.FindElementNull(by);
-
-        // include the following constructors in any derived classes, replacing the class name:
-        /*
-        public DerivedWebFormObject(IWebElement element) : base(element) { }
-        public DerivedWebFormObject(ISearchContext searchContext, By by) : base(searchContext, by) { }
-        */
-
-        /// <summary>
-        /// Checks if object exists on the webpage
-        /// </summary>
-        public bool Exists
+        public WebFormObject(ISearchContext searchContext, By by)
         {
-            get
-            {
-                return _element != null;
-            }
-
+            Element = searchContext.FindElementNull(by) ?? throw new NoSuchElementException("Object does not exist");
         }
 
         /// <summary>
@@ -71,12 +45,54 @@ namespace UiTestFoundation
     /// </summary>
     public class TextBox : WebFormObject
     {
+        /// <summary>
+        /// Ctr for Textbox
+        /// </summary>
+        /// <param name="element">will throw NoSuchElementException if element is null</param>
         public TextBox(IWebElement element) : base(element) { }
-        /*
-        public TextBox(IWebElement parentElement, By by) : base(parentElement, by) { }
-        public TextBox(IWebDriver driver, By by) : base(driver, by) { }
-        */
+
+        /// <summary>
+        /// ctr for textbox
+        /// </summary>
+        /// <param name="searchContext">the search context to find the element in</param>
+        /// <param name="by">the search parameters.  If no element found NoSuchElementException will be thrown</param>
         public TextBox(ISearchContext searchContext, By by) : base(searchContext, by) { }
+        
+        /// <summary>
+        /// Creates and returns a TextBox instance.  Will return null if element is null;
+        /// </summary>
+        /// <param name="element">element representing the TextBox</param>
+        /// <returns>TextBox or null</returns>
+        public static TextBox Create(IWebElement element)
+        {
+            if (element != null)
+                return new TextBox(element);
+            else
+                return null;
+        }
+
+        /// <summary>
+        /// Creates and returns a TextBox instance.  Will return null if elements resolves to null;
+        /// </summary>
+        /// <param name="element">element representing the TextBox</param>
+        /// <returns>TextBox or null</returns>
+        public static TextBox Create(ISearchContext searchContext, By by)
+        {
+            IWebElement element = searchContext.FindElementNull(by);
+            return Create(element);
+        }
+
+        public string Text
+        {
+            get
+            {
+                return Element.GetAttribute("value");
+            }
+            set
+            {
+                SetText(value);
+            }
+        }
 
         public void SetText(string text)
         {
@@ -95,12 +111,26 @@ namespace UiTestFoundation
     }
 
     /// <summary>
-    /// Represents a Checkbox on a webpage
+    /// Represents a Radio Button on a webpage
     /// </summary>
     public class RadioButton : WebFormObject
     {
         public RadioButton(IWebElement element) : base(element) { }
         public RadioButton(ISearchContext searchContext, By by) : base(searchContext, by) { }
+
+        public static RadioButton Create(IWebElement element)
+        {
+            if (element != null)
+                return new RadioButton(element);
+            else
+                return null;
+        }
+
+        public static RadioButton Create(ISearchContext searchContext, By by)
+        {
+            IWebElement element = searchContext.FindElementNull(by);
+            return Create(element);
+        }
 
         public bool Selected
         {
@@ -125,8 +155,21 @@ namespace UiTestFoundation
     public class CheckBox : WebFormObject
     {
         public CheckBox(IWebElement element) : base(element) { }
-        public CheckBox(IWebElement parentElement, By by) : base(parentElement, by) { }
-        public CheckBox(IWebDriver driver, By by) : base(driver, by) { }
+        public CheckBox(ISearchContext searchContext, By by) : base(searchContext, by) { }
+
+        public static CheckBox Create(IWebElement element)
+        {
+            if (element != null)
+                return new CheckBox(element);
+            else
+                return null;
+        }
+
+        public static CheckBox Create(ISearchContext searchContext, By by)
+        {
+            IWebElement element = searchContext.FindElementNull(by);
+            return Create(element);
+        }
 
         public bool Selected
         {
@@ -150,6 +193,20 @@ namespace UiTestFoundation
         public Button(IWebElement element) : base(element) { }
         public Button(ISearchContext searchContext, By by) : base(searchContext, by) { }
 
+        public static Button Create(IWebElement element)
+        {
+            if (element != null)
+                return new Button(element);
+            else
+                return null;
+        }
+
+        public static Button Create(ISearchContext searchContext, By by)
+        {
+            IWebElement element = searchContext.FindElementNull(by);
+            return Create(element);
+        }
+
         public void Click()
         {
             Element.Click();
@@ -167,8 +224,21 @@ namespace UiTestFoundation
     public class TextArea : WebFormObject
     {
         public TextArea(IWebElement element) : base(element) { }
-        public TextArea(IWebElement parentElement, By by) : base(parentElement, by) { }
-        public TextArea(IWebDriver driver, By by) : base(driver, by) { }
+        public TextArea(ISearchContext searchContext, By by) : base(searchContext, by) { }
+
+        public static TextArea Create(IWebElement element)
+        {
+            if (element != null)
+                return new TextArea(element);
+            else
+                return null;
+        }
+
+        public static TextArea Create(ISearchContext searchContext, By by)
+        {
+            IWebElement element = searchContext.FindElementNull(by);
+            return Create(element);
+        }
 
         public string Text
         {
@@ -182,8 +252,34 @@ namespace UiTestFoundation
     public class Link : WebFormObject
     {
         public Link(IWebElement element) : base(element) { }
-        public Link(IWebElement parentElement, By by) : base(parentElement, by) { }
-        public Link(IWebDriver driver, By by) : base(driver, by) { }
+        public Link(ISearchContext searchContext, By by) : base(searchContext, by) { }
+
+        public static Link Create(IWebElement element)
+        {
+            if (element != null)
+                return new Link(element);
+            else
+                return null;
+        }
+
+        public static Link Create(ISearchContext searchContext, By by)
+        {
+            IWebElement element = searchContext.FindElementNull(by);
+            return Create(element);
+        }
+
+        public void Click()
+        {
+            Element.Click();
+        }
+
+        public string Text
+        {
+            get
+            {
+                return Element.Text;
+            }
+        }
     }
 
     public class DropDownList : WebFormObject
@@ -194,21 +290,29 @@ namespace UiTestFoundation
         {
             AssignSelectElement();
         }
-        public DropDownList(IWebElement parentElement, By by) : base(parentElement, by)
-        {
-            AssignSelectElement();
-        }
-        public DropDownList(IWebDriver driver, By by) : base(driver, by)
+
+        public DropDownList(ISearchContext searchContext, By by) : base(searchContext, by)
         {
             AssignSelectElement();
         }
 
+        public static DropDownList Create(IWebElement element)
+        {
+            if (element != null)
+                return new DropDownList(element);
+            else
+                return null;
+        }
+
+        public static DropDownList Create(ISearchContext searchContext, By by)
+        {
+            IWebElement element = searchContext.FindElementNull(by);
+            return Create(element);
+        }
+
         private void AssignSelectElement()
         {
-            if (_element != null)
-            {
-                _selectElement = new SelectElement(_element);
-            }
+            _selectElement = new SelectElement(Element);
         }
 
         public void SelectByText(string selection)
