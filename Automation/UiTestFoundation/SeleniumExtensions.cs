@@ -39,5 +39,46 @@ namespace UiTestFoundation
         {
             return element.FindElementNull(By.XPath(".."));
         }
+        
+        
+        /// <summary>
+        /// Custom extension:
+        /// Returns the first sibling of the current element
+        /// </summary>
+        public static IWebElement FirstSibling(this IWebElement element, string tagOfSibling)
+        {
+            return element.FindElementNull(By.XPath($"following-sibling::{tagOfSibling}"));
+        }
+
+        /// <summary>
+        /// Custom extension:
+        /// Waits until all ajax calls are complete.  
+        /// Uses the javascript method: "return jQuery.active == 0"
+        /// </summary>
+        public static void WaitForAjaxComplete(this IWebDriver driver, TimeSpan timeout)
+        {
+            WebDriverWait ajaxWait = new WebDriverWait(driver, timeout);
+            ajaxWait.Until(d => (bool)(d as IJavaScriptExecutor).ExecuteScript("return jQuery.active == 0"));
+        }
+
+        /// <summary>
+        /// Custom extension:
+        /// Waits until the element located with the by is visible
+        /// </summary>
+        public static void WaitForElementVisible(this IWebDriver driver, By by, TimeSpan timeout)
+        {
+            WebDriverWait elementInvisibleWait = new WebDriverWait(driver, timeout);
+            elementInvisibleWait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(by));
+        }
+
+        /// <summary>
+        /// Custom extension:
+        /// Waits until the element located with the by is invisible
+        /// </summary>
+        public static void WaitForElementInvisible(this IWebDriver driver, By by, TimeSpan timeout)
+        {
+            WebDriverWait elementInvisibleWait = new WebDriverWait(driver, timeout);
+            elementInvisibleWait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(by));
+        }
     }
 }
