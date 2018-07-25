@@ -8,9 +8,8 @@ using OpenQA.Selenium.Support.UI;
 
 namespace UiTestFoundation
 {
-
     /// <summary>
-    /// Abstract class for specific web form objects
+    /// class for specific web form objects
     /// </summary>
     public abstract class WebFormObject
     {
@@ -18,12 +17,12 @@ namespace UiTestFoundation
 
         public WebFormObject(IWebElement element)
         {
-            Element = element ?? throw new NoSuchElementException("Object does not exist");
+            Element = element ?? throw new NoSuchElementException("IWebElement is null, unable to create WebFormObject!");
         }
 
         public WebFormObject(ISearchContext searchContext, By by)
         {
-            Element = searchContext.FindElementNull(by) ?? throw new NoSuchElementException("Object does not exist");
+            Element = searchContext.FindElementNull(by) ?? throw new NoSuchElementException("No IWebElement found, unable to createWebFormObject!");
         }
 
         /// <summary>
@@ -34,6 +33,9 @@ namespace UiTestFoundation
             get { return Element != null && Element.Displayed; }
         }
 
+        /// <summary>
+        /// Checks if the object is enabled on the page
+        /// </summary>
         public bool Enabled
         {
             get { return Element != null && Element.Displayed; }
@@ -57,12 +59,7 @@ namespace UiTestFoundation
         /// <param name="searchContext">the search context to find the element in</param>
         /// <param name="by">the search parameters.  If no element found NoSuchElementException will be thrown</param>
         public TextBox(ISearchContext searchContext, By by) : base(searchContext, by) { }
-        
-        /// <summary>
-        /// Creates and returns a TextBox instance.  Will return null if element is null;
-        /// </summary>
-        /// <param name="element">element representing the TextBox</param>
-        /// <returns>TextBox or null</returns>
+
         public static TextBox Create(IWebElement element)
         {
             if (element != null)
@@ -71,11 +68,6 @@ namespace UiTestFoundation
                 return null;
         }
 
-        /// <summary>
-        /// Creates and returns a TextBox instance.  Will return null if elements resolves to null;
-        /// </summary>
-        /// <param name="element">element representing the TextBox</param>
-        /// <returns>TextBox or null</returns>
         public static TextBox Create(ISearchContext searchContext, By by)
         {
             IWebElement element = searchContext.FindElementNull(by);
@@ -90,13 +82,8 @@ namespace UiTestFoundation
             }
             set
             {
-                SetText(value);
+                Element.SendKeys(value);
             }
-        }
-
-        public void SetText(string text)
-        {
-            Element.SendKeys(text);
         }
 
         public void PressEnter()
@@ -188,8 +175,18 @@ namespace UiTestFoundation
         }
     }
 
+
+    /// <summary>
+    /// Represents a Button on a webpage
+    /// Use WaitOnClick after create to set up simple waiting logic on clicks.
+    /// </summary>
     public class Button : WebFormObject
     {
+        private bool _waitOnClickEnabled = false;
+        private By _waitOnClickLocator = null;
+        private IWebDriver _driver = null;
+        private TimeSpan _waitTime;
+
         public Button(IWebElement element) : base(element) { }
         public Button(ISearchContext searchContext, By by) : base(searchContext, by) { }
 
@@ -207,9 +204,31 @@ namespace UiTestFoundation
             return Create(element);
         }
 
+        /// <summary>
+        /// if set up, button will wait for the element located at by after click to be visible
+        /// </summary>
+        /// <param name="driver">current webdriver instance</param>
+        /// <param name="by">By Locator to element to wait for</param>
+        public void WaitOnClick(IWebDriver driver, By by, TimeSpan timespan)
+        {
+            _waitOnClickEnabled = true;
+            _driver = driver;
+            _waitOnClickLocator = by;
+            _waitTime = timespan;
+        }
+
+        /// <summary>
+        /// Perform a click.  If WaitOnElement is enabled, will wait for set up element to be visible.
+        /// If more complex waiting is required, think about wrapping it up in the page model, or inheriting and overriding the click method.
+        /// </summary>
         public void Click()
         {
             Element.Click();
+
+            if (_waitOnClickEnabled)
+            {
+                _driver.WaitForElementVisible(_waitOnClickLocator, _waitTime);
+            }
         }
 
         public string Text
@@ -278,6 +297,78 @@ namespace UiTestFoundation
             get
             {
                 return Element.Text;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Used to represent animated loading images.  Provides waiting functionality.
+    /// </summary>
+    public class LoadingSpinner
+    {
+        private By _by;
+        private IWebDriver _driver;
+
+        /// <summary>
+        /// Constructor for loading spinner object
+        /// </summary>
+        /// <param name="driver">Webdriver, needed for internal waiting methods</param>
+        /// <param name="by">Locator to the visual loading object</param>
+        public LoadingSpinner(IWebDriver driver, By by)
+        {
+            _driver = driver;
+            _by = by;
+        }
+
+        /// <summary>
+        /// Waits until the LoadingSpinner object appears on the page
+        /// </summary>
+        public void WaitUntilAppear(TimeSpan timeout)
+        {
+            _driver.WaitForElementVisible(_by, timeout);
+        }
+
+        /// <summary>
+        /// Waits until the LoadingSpinner object vanishes from the page
+        /// </summary>
+        public void WaitUntilVanish(TimeSpan timeout)
+        {
+            _driver.WaitForElementInvisible(_by, timeout);
+        }
+
+        /// <summary>
+        /// Waits until all ajax calls finish, or until the process times out
+        /// </summary>
+        public void WaitUntilAjaxFinishes(TimeSpan timeout)
+        {
+            _driver.WaitForAjaxComplete(timeout);
+        }
+
+        /// <summary>
+        /// Waits until all ajax calls finish and the LoadingSpinner object vanishes from the page
+        /// </summary>
+        public void WaitUntilLoadingFinishes(TimeSpan timeout)
+        {
+            WaitUntilAjaxFinishes(timeout);
+            WaitUntilVanish(timeout);
+        }
+
+        /// <summary>
+        /// Checks if the object is displayed on the page
+        /// </summary>
+        public bool Displayed
+        {
+            get
+            {
+                try
+                {
+                    var elementToBeDisplayed = _driver.FindElementNull(_by);
+                    return elementToBeDisplayed == null ? false : elementToBeDisplayed.Displayed;
+                }
+                catch (StaleElementReferenceException)
+                {
+                    return false;
+                }
             }
         }
     }

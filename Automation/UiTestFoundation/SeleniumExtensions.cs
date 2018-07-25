@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace UiTestFoundation
 {

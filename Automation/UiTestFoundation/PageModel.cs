@@ -19,39 +19,58 @@ namespace UiTestFoundation
 
         public HtmlBlob(ISearchContext searchContext, UiTestFixture testFixture)
         {
-            SearchContext = searchContext;
-            TestFixture = testFixture;
+            SearchContext = searchContext ?? throw new ArgumentException("Search context is null, when creating HTML blob!");
+            TestFixture = testFixture ?? throw new ArgumentException("Test Fixture is null, when creating HTML blob!"); ;
         }
 
         protected TestConfiguration Config
         {
             get
             {
-                if (TestFixture == null)
-                {
-                    throw new ArgumentException("Parent TextFixture was not set on object creation.");
-                }
-
                 return TestFixture.Config;
+            }
+        }
+
+        protected UiConfiguration UIConfig
+        {
+            get
+            {
+                return TestFixture.UiSettings;
+            }
+        }
+
+        protected Logger Log
+        {
+            get
+            {
+                return TestFixture.Log;
             }
         }
     }
 
-    // all page models will derive from this 
+    /// <summary>
+    /// The basis for all page models, assumed to be the entire range of the Driver root
+    /// </summary>
     public abstract class PageModel : HtmlBlob
     {
+
+        /// <summary>
+        /// Webdriver.  Used to find all elements needed to perform actions on the page
+        /// </summary>
         protected IWebDriver Driver
         {
             get
             {
                 if (TestFixture == null)
                 {
-                    throw new ArgumentException("Parent TextFixture was not set on object creation.");
+                    throw new ArgumentException("Parent TextFixture was not set on page creation.");
                 }
-
+                
                 return TestFixture.Driver;
             }
         }
+
+        
 
         public abstract void Go();
 

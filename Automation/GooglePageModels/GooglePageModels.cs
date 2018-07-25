@@ -64,7 +64,7 @@ namespace GooglePageModels
         /// <returns>a page model of the google results page</returns>
         public GoogleResultsPage EnterTextAndSearch(string searchText)
         {
-            SearchBox.SetText(searchText);
+            SearchBox.Text = searchText;
             SearchBox.PressEnter();
             return new GoogleResultsPage(TestFixture);
         }

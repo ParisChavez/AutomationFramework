@@ -24,13 +24,14 @@ namespace UiTestFoundation
         {
             get
             {
-                switch (_uiTestFixture.Config.GetSetting("Browser"))
+                switch (_uiTestFixture.Config.GetSetting("Browser").ToLower())
                 {
                     case "internetexplorer":
                     case "ie":
                         return UiTestFoundation.TestBrowser.IE;
 
                     case "firefox":
+                    case "ff":
                         return UiTestFoundation.TestBrowser.Firefox;
 
                     case "chrome":
