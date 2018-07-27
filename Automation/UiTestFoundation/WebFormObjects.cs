@@ -9,20 +9,52 @@ using OpenQA.Selenium.Support.UI;
 namespace UiTestFoundation
 {
     /// <summary>
-    /// class for specific web form objects
+    /// Abstract class for specific web form objects
     /// </summary>
     public abstract class WebFormObject
     {
-        protected IWebElement Element { get; set; }
+        private IWebElement _element;
+        private ISearchContext _searchContext { get; set; }
+        private By _by { get; set; }
+        private bool _staticObject;
 
-        public WebFormObject(IWebElement element)
+        /// <summary>
+        /// Get the element for the object.  Will throw an exception if null, use WebFormObject.Exists to check beforehand;
+        /// </summary>
+        protected IWebElement Element
         {
-            Element = element ?? throw new NoSuchElementException("IWebElement is null, unable to create WebFormObject!");
+            get
+            {
+                if (_element == null || _element.IsStale())
+                {
+                    _element = _searchContext.FindElementNull(_by);
+                }
+
+                return _element ?? throw new InvalidOperationException($"Expected {this.GetType().Name} object does not exist on the page!");
+            }
         }
 
+        /// <summary>
+        /// Create a static version of a webformObject that will support waits.  Will throw exception if a wait is attempted
+        /// </summary>
+        /// <param name="searchContext"></param>
+        /// <param name="by"></param>
+        public WebFormObject(IWebElement element)
+        {
+            _element = element ?? throw new ArgumentException("element cannot be null when creating a constant webformObject!");
+            _staticObject = true;
+        }
+
+        /// <summary>
+        /// Create a dynamic version of a webformObject that will support waits, and update on the fly
+        /// </summary>
+        /// <param name="searchContext"></param>
+        /// <param name="by"></param>
         public WebFormObject(ISearchContext searchContext, By by)
         {
-            Element = searchContext.FindElementNull(by) ?? throw new NoSuchElementException("No IWebElement found, unable to createWebFormObject!");
+            _by = by;
+            _searchContext = searchContext ?? throw new ArgumentException("searchContext cannot be null when creating a webformObject!");
+            _staticObject = false;
         }
 
         /// <summary>
@@ -39,6 +71,30 @@ namespace UiTestFoundation
         public bool Enabled
         {
             get { return Element != null && Element.Displayed; }
+        }
+
+        public bool Exists
+        {
+            get
+            {
+                return Element != null;
+            }
+        }
+
+        public void WaitForVisible(int timeout = 15)
+        {
+            if (!_staticObject)
+            {
+                _searchContext.WaitForElementVisible(_by, TimeSpan.FromSeconds(15));
+            }
+        }
+
+        public void WaitForInvisible(TimeSpan timeout)
+        {
+            if (!_staticObject)
+            {
+                _searchContext.WaitForElementInvisible(_by, timeout);
+            }
         }
     }
 
@@ -59,20 +115,6 @@ namespace UiTestFoundation
         /// <param name="searchContext">the search context to find the element in</param>
         /// <param name="by">the search parameters.  If no element found NoSuchElementException will be thrown</param>
         public TextBox(ISearchContext searchContext, By by) : base(searchContext, by) { }
-
-        public static TextBox Create(IWebElement element)
-        {
-            if (element != null)
-                return new TextBox(element);
-            else
-                return null;
-        }
-
-        public static TextBox Create(ISearchContext searchContext, By by)
-        {
-            IWebElement element = searchContext.FindElementNull(by);
-            return Create(element);
-        }
 
         public string Text
         {
@@ -105,20 +147,6 @@ namespace UiTestFoundation
         public RadioButton(IWebElement element) : base(element) { }
         public RadioButton(ISearchContext searchContext, By by) : base(searchContext, by) { }
 
-        public static RadioButton Create(IWebElement element)
-        {
-            if (element != null)
-                return new RadioButton(element);
-            else
-                return null;
-        }
-
-        public static RadioButton Create(ISearchContext searchContext, By by)
-        {
-            IWebElement element = searchContext.FindElementNull(by);
-            return Create(element);
-        }
-
         public bool Selected
         {
             get
@@ -144,20 +172,6 @@ namespace UiTestFoundation
         public CheckBox(IWebElement element) : base(element) { }
         public CheckBox(ISearchContext searchContext, By by) : base(searchContext, by) { }
 
-        public static CheckBox Create(IWebElement element)
-        {
-            if (element != null)
-                return new CheckBox(element);
-            else
-                return null;
-        }
-
-        public static CheckBox Create(ISearchContext searchContext, By by)
-        {
-            IWebElement element = searchContext.FindElementNull(by);
-            return Create(element);
-        }
-
         public bool Selected
         {
             get
@@ -175,7 +189,6 @@ namespace UiTestFoundation
         }
     }
 
-
     /// <summary>
     /// Represents a Button on a webpage
     /// Use WaitOnClick after create to set up simple waiting logic on clicks.
@@ -189,20 +202,6 @@ namespace UiTestFoundation
 
         public Button(IWebElement element) : base(element) { }
         public Button(ISearchContext searchContext, By by) : base(searchContext, by) { }
-
-        public static Button Create(IWebElement element)
-        {
-            if (element != null)
-                return new Button(element);
-            else
-                return null;
-        }
-
-        public static Button Create(ISearchContext searchContext, By by)
-        {
-            IWebElement element = searchContext.FindElementNull(by);
-            return Create(element);
-        }
 
         /// <summary>
         /// if set up, button will wait for the element located at by after click to be visible
@@ -245,20 +244,6 @@ namespace UiTestFoundation
         public TextArea(IWebElement element) : base(element) { }
         public TextArea(ISearchContext searchContext, By by) : base(searchContext, by) { }
 
-        public static TextArea Create(IWebElement element)
-        {
-            if (element != null)
-                return new TextArea(element);
-            else
-                return null;
-        }
-
-        public static TextArea Create(ISearchContext searchContext, By by)
-        {
-            IWebElement element = searchContext.FindElementNull(by);
-            return Create(element);
-        }
-
         public string Text
         {
             get
@@ -272,20 +257,6 @@ namespace UiTestFoundation
     {
         public Link(IWebElement element) : base(element) { }
         public Link(ISearchContext searchContext, By by) : base(searchContext, by) { }
-
-        public static Link Create(IWebElement element)
-        {
-            if (element != null)
-                return new Link(element);
-            else
-                return null;
-        }
-
-        public static Link Create(ISearchContext searchContext, By by)
-        {
-            IWebElement element = searchContext.FindElementNull(by);
-            return Create(element);
-        }
 
         public void Click()
         {
@@ -302,7 +273,7 @@ namespace UiTestFoundation
     }
 
     /// <summary>
-    /// Used to represent animated loading images.  Provides waiting functionality.
+    /// Used to represent animated images.  Provides waiting functionality.
     /// </summary>
     public class LoadingSpinner
     {
@@ -325,7 +296,8 @@ namespace UiTestFoundation
         /// </summary>
         public void WaitUntilAppear(TimeSpan timeout)
         {
-            _driver.WaitForElementVisible(_by, timeout);
+            WebDriverWait elementInvisibleWait = new WebDriverWait(_driver, timeout);
+            elementInvisibleWait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(_by));
         }
 
         /// <summary>
@@ -333,7 +305,8 @@ namespace UiTestFoundation
         /// </summary>
         public void WaitUntilVanish(TimeSpan timeout)
         {
-            _driver.WaitForElementInvisible(_by, timeout);
+            WebDriverWait elementInvisibleWait = new WebDriverWait(_driver, timeout);
+            elementInvisibleWait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(_by));
         }
 
         /// <summary>
@@ -373,47 +346,45 @@ namespace UiTestFoundation
         }
     }
 
+    /// <summary>
+    /// TODO, figure this out
+    /// </summary>
     public class DropDownList : WebFormObject
     {
-        private SelectElement _selectElement;
+        /// <summary>
+        /// Do not use directly, use Property SelectElement instead.
+        /// </summary>
+        private SelectElement _selectElement = null;
+
+        protected SelectElement SelectElement
+        {
+            get
+            {
+                if (_selectElement == null)
+                {
+                    _selectElement = new SelectElement(Element);
+                }
+                return _selectElement;
+            }
+        }
 
         public DropDownList(IWebElement element) : base(element)
         {
-            AssignSelectElement();
         }
 
         public DropDownList(ISearchContext searchContext, By by) : base(searchContext, by)
         {
-            AssignSelectElement();
-        }
 
-        public static DropDownList Create(IWebElement element)
-        {
-            if (element != null)
-                return new DropDownList(element);
-            else
-                return null;
-        }
-
-        public static DropDownList Create(ISearchContext searchContext, By by)
-        {
-            IWebElement element = searchContext.FindElementNull(by);
-            return Create(element);
-        }
-
-        private void AssignSelectElement()
-        {
-            _selectElement = new SelectElement(Element);
         }
 
         public void SelectByText(string selection)
         {
-            _selectElement.SelectByText(selection);
+            SelectElement.SelectByText(selection);
         }
 
         public void SelectByValue(string value)
         {
-            _selectElement.SelectByValue(value);
+            SelectElement.SelectByValue(value);
         }
     }
 }
