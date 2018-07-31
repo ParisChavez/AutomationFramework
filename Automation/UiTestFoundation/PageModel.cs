@@ -10,79 +10,86 @@ using TestFoundation;
 namespace UiTestFoundation
 {
     /// <summary>
-    /// used to represent chunks of html that need to be grouped together, such as: pages, popups, search results, records, iframes, etc.
+    /// Represents the pages of the site.
     /// </summary>
-    public abstract class HtmlBlob
+    public abstract class PageModel
     {
         protected UiTestFixture TestFixture { get; set; }
-        protected ISearchContext SearchContext { get; set; }
-
-        public HtmlBlob(ISearchContext searchContext, UiTestFixture testFixture)
-        {
-            SearchContext = searchContext ?? throw new ArgumentException("Search context is null, when creating HTML blob!");
-            TestFixture = testFixture ?? throw new ArgumentException("Test Fixture is null, when creating HTML blob!"); ;
-        }
-
-        protected TestConfiguration Config
-        {
-            get
-            {
-                return TestFixture.Config;
-            }
-        }
-
-        protected UiConfiguration UIConfig
-        {
-            get
-            {
-                return TestFixture.UiSettings;
-            }
-        }
-
-        protected Logger Log
-        {
-            get
-            {
-                return TestFixture.Log;
-            }
-        }
-    }
-
-    /// <summary>
-    /// The basis for all page models, assumed to be the entire range of the Driver root
-    /// </summary>
-    public abstract class PageModel : HtmlBlob
-    {
 
         /// <summary>
-        /// Webdriver.  Used to find all elements needed to perform actions on the page
+        /// Access the browser navagation methods.
         /// </summary>
-        protected IWebDriver Driver
+        public navigate Navigate { get; private set; }
+
+        /// <summary>
+        /// Check to see if user is on the page.  Override for each page.
+        /// </summary>
+        public PageModel(UiTestFixture testFixture)
         {
-            get
-            {
-                if (TestFixture == null)
-                {
-                    throw new ArgumentException("Parent TextFixture was not set on page creation.");
-                }
-                
-                return TestFixture.Driver;
-            }
+            TestFixture = testFixture ?? throw new ArgumentException("TestFixture is null.");
+            Navigate = new navigate(Driver);
         }
 
-        
+        /// <summary>
+        /// Test configuration object containing all test setttings.
+        /// </summary>
+        protected TestConfiguration Config => TestFixture.Config;
 
+        /// <summary>
+        /// UiSettings for the current test run.
+        /// Use to check for browser, device, etc, which may affect element querying.
+        /// </summary>
+        protected UiConfiguration UIConfig => TestFixture.UiSettings;
+
+        /// <summary>
+        /// Log steps, exceptions, decisions
+        /// </summary>
+        protected Logger Log => TestFixture.Log;
+
+        /// <summary>
+        /// The driver to use in locating all elements on the page.
+        /// </summary>
+        protected IWebDriver Driver => TestFixture.Driver;
+
+        /// <summary>
+        /// Go directly to the page.  Override for each page.
+        /// </summary>
         public abstract void Go();
 
+        /// <summary>
+        /// Check to see if user is on the page.  Override for each page.
+        /// </summary>
         public abstract bool IsAt();
 
-        public PageModel(UiTestFixture testFixture) : base(testFixture.Driver, testFixture) { }
+        /// <summary>
+        /// Get the title of the current page.
+        /// </summary>
+        public string Title => Driver.Title;
 
-        public void GoToUrl(string url) => Driver.Navigate().GoToUrl(url);
-
-        public string Title
+        public class navigate
         {
-            get => Driver.Title;
+            private IWebDriver _driver;
+            public navigate(IWebDriver driver) => _driver = driver;
+
+            /// <summary>
+            /// Go to arbritrary url
+            /// </summary>
+            public void GoToUrl(string url) => _driver.Navigate().GoToUrl(url);
+
+            /// <summary>
+            /// Refresh the page
+            /// </summary>
+            public void Refresh() => _driver.Navigate().Refresh();
+
+            /// <summary>
+            /// Use the browser's Go Back button
+            /// </summary>
+            public void GoBack() => _driver.Navigate().Back();
+
+            /// <summary>
+            /// Use the browser's Go Forward button
+            /// </summary>
+            public void GoForward() => _driver.Navigate().Forward();
         }
     }
 }

@@ -49,7 +49,7 @@ namespace GooglePageModels
 
         public override void Go()
         {
-            GoToUrl("http://www.google.com");
+            Navigate.GoToUrl("http://www.google.com");
         }
 
         public override bool IsAt()
@@ -76,7 +76,7 @@ namespace GooglePageModels
 
         public override void Go()
         {
-            GoToUrl("http://www.google.com");
+            Navigate.GoToUrl("http://www.google.com");
         }
 
         public override bool IsAt()
