@@ -39,7 +39,7 @@ namespace ExampleTests
             Log.Info("This is Log4Net again");
             GoogleHomepage homepage = new GoogleHomepage(this); //CreateWebPageModel<GoogleHomepage>();
             homepage.Go();
-            GoogleResultsPage resultsPage = homepage.EnterTextAndSearch("HP Lovecraft");
+            GoogleResultsPage resultsPage = homepage.Actions.EnterTextAndSearch("HP Lovecraft");
 
             Assert.IsTrue(resultsPage.Title.Contains("HP Lovecraft"));
         }
@@ -51,8 +51,7 @@ namespace ExampleTests
         {
             GoogleHomepage homepage = new GoogleHomepage(this);
             homepage.Go();
-            GoogleResultsPage resultsPage = homepage.EnterTextAndSearch(searchTerm);
-
+            GoogleResultsPage resultsPage = homepage.Actions.EnterTextAndSearch(searchTerm);
             Assert.IsTrue(resultsPage.Title.Contains(searchTerm));
         }
 

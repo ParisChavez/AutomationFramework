@@ -5,6 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using System.Configuration;
+using System.IO;
+using System.Reflection;
+using NUnit.Framework.Interfaces;
 
 namespace TestFoundation
 {
@@ -43,6 +46,11 @@ namespace TestFoundation
             // return null if key does not exist
             return ConfigurationManager.AppSettings[setting];
         }
+
+        public string GetAssemblyLocation()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
     }
 
     public class TestFixture
@@ -71,7 +79,15 @@ namespace TestFoundation
         [TearDown]
         public void TestTearDown()
         {
-            Log.Debug("TestFixture test teardown");
+            if (TestContext.CurrentContext.Result.Outcome != ResultState.Success)
+            {
+                Log.Debug(TestContext.CurrentContext.Test.Name + " did not pass with message:");
+                Log.Debug(TestContext.CurrentContext.Result.Message);
+            }
+            else
+            {
+                Log.Debug(TestContext.CurrentContext.Test.Name + " ran successfully");
+            }
         }
 
         [OneTimeTearDown]

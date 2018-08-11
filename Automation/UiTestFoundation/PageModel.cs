@@ -9,17 +9,63 @@ using TestFoundation;
 
 namespace UiTestFoundation
 {
+    public interface IPageInfo
+    {
+        /// <summary>
+        /// The HTML source of the current page.
+        /// </summary>
+        string PageSource { get; }
+
+        /// <summary>
+        /// Query the page to get any javascript object
+        /// </summary>
+        /// <param name="jsObjectName">Name of the javascript object</param>
+        /// <returns>A dictionary containing the name and objects.  Typically a set of nested dictionaries.</returns>
+        Dictionary<string, object> GetJavascriptObject(string jsObjectName);
+    }
+
+    public interface IPageNavigate
+    {
+        void GoToUrl(string url);
+
+        /// <summary>
+        /// Refresh the page
+        /// </summary>
+        void Refresh();
+
+        /// <summary>
+        /// Use the browser's Go Back button
+        /// </summary>
+        void GoBack();
+
+        /// <summary>
+        /// Use the browser's Go Forward button
+        /// </summary>
+        void GoForward();
+    }
+
     /// <summary>
     /// Represents the pages of the site.
     /// </summary>
-    public abstract class PageModel
+    public abstract class PageModel : IPageInfo, IPageNavigate
     {
         protected UiTestFixture TestFixture { get; set; }
 
         /// <summary>
+        /// Get information composing the source of the page
+        /// </summary>
+        public IPageInfo PageInfo
+        {
+            get => this;
+        }
+
+        /// <summary>
         /// Access the browser navagation methods.
         /// </summary>
-        public navigate Navigate { get; private set; }
+        public IPageNavigate Navigate
+        {
+            get => this;
+        }
 
         /// <summary>
         /// Check to see if user is on the page.  Override for each page.
@@ -27,7 +73,6 @@ namespace UiTestFoundation
         public PageModel(UiTestFixture testFixture)
         {
             TestFixture = testFixture ?? throw new ArgumentException("TestFixture is null.");
-            Navigate = new navigate(Driver);
         }
 
         /// <summary>
@@ -62,34 +107,45 @@ namespace UiTestFoundation
         public abstract bool IsAt();
 
         /// <summary>
+        /// Error message to display in asserts using the IsAt() method.
+        /// </summary>
+        public abstract string IsAtErrorMessage();
+
+        /// <summary>
         /// Get the title of the current page.
         /// </summary>
         public string Title => Driver.Title;
 
-        public class navigate
-        {
-            private IWebDriver _driver;
-            public navigate(IWebDriver driver) => _driver = driver;
+        /// <summary>
+        /// Query the page to get any javascript object
+        /// </summary>
+        /// <param name="jsObjectName">Name of the javascript object</param>
+        /// <returns>A dictionary containing the name and objects.  Typically a set of nested dictionaries.</returns>
+        Dictionary<string, object> IPageInfo.GetJavascriptObject(string jsObjectName) => Driver.GetJavascriptObject(jsObjectName);
 
-            /// <summary>
-            /// Go to arbritrary url
-            /// </summary>
-            public void GoToUrl(string url) => _driver.Navigate().GoToUrl(url);
+        /// <summary>
+        /// The HTML source of the current page.
+        /// </summary>
+        string IPageInfo.PageSource => Driver.PageSource;
 
-            /// <summary>
-            /// Refresh the page
-            /// </summary>
-            public void Refresh() => _driver.Navigate().Refresh();
+        /// <summary>
+        /// Go to arbritrary url
+        /// </summary>
+        void IPageNavigate.GoToUrl(string url) => Driver.Navigate().GoToUrl(url);
 
-            /// <summary>
-            /// Use the browser's Go Back button
-            /// </summary>
-            public void GoBack() => _driver.Navigate().Back();
+        /// <summary>
+        /// Refresh the page
+        /// </summary>
+        void IPageNavigate.Refresh() => Driver.Navigate().Refresh();
 
-            /// <summary>
-            /// Use the browser's Go Forward button
-            /// </summary>
-            public void GoForward() => _driver.Navigate().Forward();
-        }
+        /// <summary>
+        /// Use the browser's Go Back button
+        /// </summary>
+        void IPageNavigate.GoBack() => Driver.Navigate().Back();
+
+        /// <summary>
+        /// Use the browser's Go Forward button
+        /// </summary>
+        void IPageNavigate.GoForward() => Driver.Navigate().Forward();
     }
 }

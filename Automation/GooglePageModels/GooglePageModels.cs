@@ -8,12 +8,22 @@ using UiTestFoundation;
 
 namespace GooglePageModels
 {
-    public class GoogleHomepage : PageModel
+    public interface IHomePageActions
+    {
+        GoogleResultsPage EnterTextAndSearch(string searchText);
+    }
+
+    public class GoogleHomepage : PageModel, IHomePageActions
     {
         public GoogleHomepage(UiTestFixture testFixture) : base(testFixture) { }
 
         private TextBox _searchBox;
         private Button _searchButton;
+        public IHomePageActions Actions
+        {
+            get =>  this; 
+        }
+
         public TextBox SearchBox
         {
             get
@@ -57,12 +67,17 @@ namespace GooglePageModels
             return Driver.Title.Equals("Google");
         }
 
+        public override string IsAtErrorMessage()
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Enters text in the search box and clicks search
         /// </summary>
         /// <param name="searchText">Text to search</param>
         /// <returns>a page model of the google results page</returns>
-        public GoogleResultsPage EnterTextAndSearch(string searchText)
+        GoogleResultsPage IHomePageActions.EnterTextAndSearch(string searchText)
         {
             SearchBox.Text = searchText;
             SearchBox.PressEnter();
@@ -82,6 +97,11 @@ namespace GooglePageModels
         public override bool IsAt()
         {
             return true;
+        }
+
+        public override string IsAtErrorMessage()
+        {
+            throw new NotImplementedException();
         }
     }
 

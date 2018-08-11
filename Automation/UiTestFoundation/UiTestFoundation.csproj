@@ -56,12 +56,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Asserts.cs" />
     <Compile Include="PageModel.cs" />
     <Compile Include="SeleniumExtensions.cs" />
     <Compile Include="UiConfiguration.cs" />
     <Compile Include="UiTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WebFormObjects.cs" />
+    <Compile Include="WebFormObjects\TextBox.cs" />
+    <Compile Include="WebFormObjects\TextArea.cs" />
+    <Compile Include="WebFormObjects\RadioButton.cs" />
+    <Compile Include="WebFormObjects\LoadingSpinner.cs" />
+    <Compile Include="WebFormObjects\Link.cs" />
+    <Compile Include="WebFormObjects\HtmlBlob.cs" />
+    <Compile Include="WebFormObjects\DropDownList.cs" />
+    <Compile Include="WebFormObjects\Checkbox.cs" />
+    <Compile Include="WebFormObjects\Button.cs" />
+    <Compile Include="WebFormObjects\WebFormObjects.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TestFoundation\TestFoundation.csproj">

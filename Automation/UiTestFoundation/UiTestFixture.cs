@@ -31,13 +31,15 @@ namespace UiTestFoundation
         private void InitializeWebDriver()
         {
             TimeSpan commandTimeout = TimeSpan.FromSeconds(UiSettings.CommandTimeout);
-            string driverDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) + "\\Drivers"; // configurable?
+            string driverDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);/* + "\\Drivers"; */// configurable?
 
             if (UiSettings.Browser == TestBrowser.Chrome)
             {
                 ChromeOptions options = new ChromeOptions();
                 options.AddArgument("--disable-extensions");
                 options.AddArgument("disable-infobars");
+                options.AddArgument("--incognito");
+                options.AddArgument("--disk-cache-dir=null");
                 //options.AddArgument("--no-sandbox");  // unsupported argument, was leaving cpu heavy chrome processes in memory after quit();
 
                 if (UiSettings.Device != TestDevice.Desktop)
@@ -50,6 +52,7 @@ namespace UiTestFoundation
             {
                 FirefoxOptions options = new FirefoxOptions();
                 Driver = new FirefoxDriver(driverDir, options, commandTimeout);
+                Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(90);
             }
             else
             {
@@ -69,8 +72,8 @@ namespace UiTestFoundation
             }
             catch (Exception e)
             {
+                // Catch and swallow the error to not affect the test results
                 Log.Error(e.Message);
-                throw;
             }
         }
 
@@ -85,6 +88,7 @@ namespace UiTestFoundation
         public void UiTestSetup()
         {
             Log.Debug("Ui Setup Method");
+            Driver.Manage().Cookies.DeleteAllCookies();
         }
 
         [TearDown]

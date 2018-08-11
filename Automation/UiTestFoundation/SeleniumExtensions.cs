@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
@@ -46,19 +47,6 @@ namespace UiTestFoundation
             ajaxWait.Until(d => (bool)(d as IJavaScriptExecutor).ExecuteScript("return jQuery.active == 0"));
         }
 
-        public static bool IsStale(this IWebElement element)
-        {
-            try
-            {
-                bool enabled = element.Enabled;
-                return false;
-            }
-            catch (StaleElementReferenceException)
-            {
-                return true;
-            }
-        }
-
         /// <summary>
         /// Custom extension:
         /// Waits for the element found using the by to become visible 
@@ -103,6 +91,45 @@ namespace UiTestFoundation
         {
             WebDriverWait elementInvisibleWait = new WebDriverWait(driver, timeout);
             elementInvisibleWait.Until(SeleniumExtras.WaitHelpers.ExpectedConditions.InvisibilityOfElementLocated(by));
+        }
+
+        /// <summary>
+        /// Custom extension:
+        /// Detects if an element is stale, and needs to be found again.
+        /// Staleness can happen after a page change, such as a refresh or navigation.
+        /// </summary>
+        /// <returns>True if stale, false otherwise</returns>
+        public static bool IsStale(this IWebElement element)
+        {
+            try
+            {
+                bool enabled = element.Enabled;
+                return false;
+            }
+            catch (StaleElementReferenceException)
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Gets the value of a javascript object and returns it as a dictionary
+        /// </summary>
+        /// <param name="objectName">The name of the javascript object to find</param>
+        /// <returns>Dictionary of the values stored in the javascript object.</returns>
+        public static Dictionary<string, object> GetJavascriptObject(this IWebDriver driver, string objectName)
+        {
+            IJavaScriptExecutor executor = (IJavaScriptExecutor)driver;
+            Dictionary<string, object> jsObject = null;
+            try
+            {
+                jsObject = (Dictionary<string, object>)executor.ExecuteScript($"return {objectName};");
+            }
+            catch (WebDriverException)
+            {
+            }
+
+            return jsObject;
         }
     }
 }
