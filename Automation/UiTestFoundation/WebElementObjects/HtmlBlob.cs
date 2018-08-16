@@ -12,7 +12,7 @@ namespace UiTestFoundation
     /// <summary>
     /// used to represent chunks of html that need to be grouped together, such as: popups, divs, search results, records, iframes, etc.
     /// </summary>
-    public abstract class HtmlBlob : WebFormObject
+    public abstract class HtmlBlob : WebElementObject
     {
         /// <summary>
         /// Test fixture used for Logs, finding test settings, and creating pages

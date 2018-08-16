@@ -11,7 +11,7 @@ namespace UiTestFoundation
     /// <summary>
     /// Represents an area of text on the page (h tags, dt, dd, spans, divs, footers, etc)
     /// </summary>
-    public class TextArea : WebFormObject
+    public class TextArea : WebElementObject
     {
         public TextArea(IWebElement element, [CallerMemberName] string creatorName = "") : base(element, creatorName) { }
         public TextArea(ISearchContext searchContext, By by, [CallerMemberName] string creatorName = "") : base(searchContext, by, creatorName) { }
@@ -23,6 +23,7 @@ namespace UiTestFoundation
         {
             get
             {
+       
                 return Element.Text;
             }
         }

@@ -12,7 +12,7 @@ namespace UiTestFoundation
     /// <summary>
     /// Abstract class for specific web form objects
     /// </summary>
-    public abstract class WebFormObject
+    public abstract class WebElementObject
     {
         private IWebElement _element;
         private ISearchContext _searchContext { get; set; }
@@ -23,7 +23,7 @@ namespace UiTestFoundation
         /// <summary>
         /// If the object is set up to be dynamic, search for the element if it is null, or if it has become stale
         /// </summary>
-        private void RequeryElement()
+        private void QueryForElement()
         {
             if (!_staticObject)
             {
@@ -41,7 +41,7 @@ namespace UiTestFoundation
         {
             get
             {
-                RequeryElement();
+                QueryForElement();
                 return _element ?? throw new NoSuchElementException(NotFoundExceptionMessage());
             }
         }
@@ -81,7 +81,7 @@ namespace UiTestFoundation
         /// Typically the property name on the page or blob creating.
         /// Used in error messaging
         /// </param>
-        public WebFormObject(IWebElement element, string creatorName = "")
+        public WebElementObject(IWebElement element, string creatorName = "")
         {
             _element = element ?? throw new ArgumentException(NotFoundExceptionMessage());
             _staticObject = true;
@@ -98,7 +98,7 @@ namespace UiTestFoundation
         /// Typically the property name on the page or blob creating.
         /// Used in error messaging
         /// </param>
-        public WebFormObject(ISearchContext searchContext, By by, string creatorName = "")
+        public WebElementObject(ISearchContext searchContext, By by, string creatorName = "")
         {
             _by = by;
             _searchContext = searchContext ?? throw new ArgumentException($"searchContext cannot be null when creating a {this.GetType().Name}!");
@@ -113,7 +113,7 @@ namespace UiTestFoundation
         {
             get
             {
-                RequeryElement();
+                QueryForElement();
                 return _element != null && Element.Displayed;
             }
         }
@@ -125,7 +125,7 @@ namespace UiTestFoundation
         {
             get
             {
-                RequeryElement();
+                QueryForElement();
                 return _element != null && Element.Enabled;
             }
         }
@@ -137,7 +137,7 @@ namespace UiTestFoundation
         {
             get
             {
-                RequeryElement();
+                QueryForElement();
                 return _element != null;
             }
         }

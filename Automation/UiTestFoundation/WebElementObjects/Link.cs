@@ -9,16 +9,15 @@ using System.Threading.Tasks;
 namespace UiTestFoundation
 {
     /// <summary>
-    /// Represents a Button on a webpage
-    /// Use WaitOnClick after create to set up simple waiting logic on clicks.
+    /// Represents a hypertext link on the page
     /// </summary>
-    public class Button : WebFormObject
+    public class Link : WebElementObject
     {
-        public Button(IWebElement element, [CallerMemberName] string creatorName = "") : base(element, creatorName) { }
-        public Button(ISearchContext searchContext, By by, [CallerMemberName] string creatorName = "") : base(searchContext, by, creatorName) { }
+        public Link(IWebElement element, [CallerMemberName] string creatorName = "") : base(element, creatorName) { }
+        public Link(ISearchContext searchContext, By by, [CallerMemberName] string creatorName = "") : base(searchContext, by, creatorName) { }
 
         /// <summary>
-        /// Perform a click.  
+        /// Clicks on the link
         /// </summary>
         public void Click()
         {
@@ -26,7 +25,7 @@ namespace UiTestFoundation
         }
 
         /// <summary>
-        /// Get text of button if it is present
+        /// Gets the text of the link
         /// </summary>
         public string Text
         {

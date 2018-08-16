@@ -61,16 +61,16 @@
     <Compile Include="UiConfiguration.cs" />
     <Compile Include="UiTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WebFormObjects\TextBox.cs" />
-    <Compile Include="WebFormObjects\TextArea.cs" />
-    <Compile Include="WebFormObjects\RadioButton.cs" />
-    <Compile Include="WebFormObjects\LoadingSpinner.cs" />
-    <Compile Include="WebFormObjects\Link.cs" />
-    <Compile Include="WebFormObjects\HtmlBlob.cs" />
-    <Compile Include="WebFormObjects\DropDownList.cs" />
-    <Compile Include="WebFormObjects\Checkbox.cs" />
-    <Compile Include="WebFormObjects\Button.cs" />
-    <Compile Include="WebFormObjects\WebFormObjects.cs" />
+    <Compile Include="WebElementObjects\TextBox.cs" />
+    <Compile Include="WebElementObjects\TextArea.cs" />
+    <Compile Include="WebElementObjects\RadioButton.cs" />
+    <Compile Include="WebElementObjects\LoadingSpinner.cs" />
+    <Compile Include="WebElementObjects\Link.cs" />
+    <Compile Include="WebElementObjects\HtmlBlob.cs" />
+    <Compile Include="WebElementObjects\DropDownList.cs" />
+    <Compile Include="WebElementObjects\Checkbox.cs" />
+    <Compile Include="WebElementObjects\Button.cs" />
+    <Compile Include="WebElementObjects\WebFormObjects.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TestFoundation\TestFoundation.csproj">

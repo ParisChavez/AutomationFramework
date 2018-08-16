@@ -11,7 +11,7 @@ namespace UiTestFoundation
     /// <summary>
     /// Represents an editable text field on a web page
     /// </summary>
-    public class TextBox : WebFormObject
+    public class TextBox : WebElementObject
     {
         /// <summary>
         /// Ctr for Textbox

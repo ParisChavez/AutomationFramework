@@ -12,7 +12,7 @@ namespace UiTestFoundation
     /// <summary>
     /// Drop down menu objects
     /// </summary>
-    public class DropDownList : WebFormObject
+    public class DropDownList : WebElementObject
     {
         /// <summary>
         /// Do not use directly, use Property SelectElement instead.

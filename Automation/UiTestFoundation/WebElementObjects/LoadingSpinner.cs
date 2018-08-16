@@ -11,7 +11,7 @@ namespace UiTestFoundation
     /// <summary>
     /// Used to represent animated images.  Provides waiting functionality.
     /// </summary>
-    public class LoadingSpinner : WebFormObject
+    public class LoadingSpinner : WebElementObject
     {
         private By _by;
         private ISearchContext _searchContext;
