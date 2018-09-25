@@ -12,11 +12,11 @@ namespace UiTestFoundation
         /// Custom extension:
         /// Finds the first IWebElement given the search parameters, null if not found
         /// </summary>
-        //public static IWebElement FindElementNull(this ISearchContext context, By by)
-        //{
-        //    var elements = context.FindElements(by);
-        //    return elements.Any() ? elements[0] : null;
-        //}
+        public static IWebElement FindElementNull(this ISearchContext context, By by)
+        {
+            var elements = context.FindElements(by);
+            return elements.Any() ? elements[0] : null;
+        }
 
         /// <summary>
         /// Custom extension:

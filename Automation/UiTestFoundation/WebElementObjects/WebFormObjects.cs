@@ -143,6 +143,17 @@ namespace UiTestFoundation
         }
 
         /// <summary>
+        /// Is the root element currently stale?  When created with element instead of a By, this determines if it should be recreated.
+        /// </summary>
+        public bool IsElementStale
+        {
+            get
+            {
+                return _element.IsStale();
+            }
+        }
+
+        /// <summary>
         /// Waits for the object to appear on the page
         /// Requires that object be created with locator and search context in constructor
         /// </summary>
