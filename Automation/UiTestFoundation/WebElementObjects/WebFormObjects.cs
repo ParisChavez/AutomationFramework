@@ -35,6 +35,24 @@ namespace UiTestFoundation
         }
 
         /// <summary>
+        /// For use in statically created objects, checks if the base element does not exist or has gone stale.
+        /// use to avoid null reference exceptions
+        /// </summary>
+        /// <returns></returns>
+        public bool IsRequeryNeeded()
+        {
+            if (_staticObject)
+            {
+                if (_element == null || _element.IsStale())
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Get the element for the object.  Will throw an exception if null, use WebFormObject.Exists to check beforehand
         /// </summary>
         protected IWebElement Element
@@ -72,7 +90,8 @@ namespace UiTestFoundation
         }
 
         /// <summary>
-        /// Create a static version of a webformObject that will no support waits.
+        /// Create a static version of a webformObject that will not support waits or automatic requeries.
+        ///  Use IsRequeryNeeded() in the page model's getters to check if it should be recreated.
         /// </summary>
         /// <param name="searchContext"></param>
         /// <param name="by"></param>
@@ -83,13 +102,13 @@ namespace UiTestFoundation
         /// </param>
         public WebElementObject(IWebElement element, string creatorName = "")
         {
-            _element = element ?? throw new ArgumentException(NotFoundExceptionMessage());
+            _element = element;
             _staticObject = true;
             _creatingMethodName = creatorName;
         }
 
         /// <summary>
-        /// Create a dynamic version of a webformObject that will support waits, and update if stale
+        /// Create a dynamic version of a webformObject that will support waits, and update if stale.  
         /// </summary>
         /// <param name="searchContext"></param>
         /// <param name="by"></param>

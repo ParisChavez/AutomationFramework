@@ -61,7 +61,7 @@
     <Compile Include="UiConfiguration.cs" />
     <Compile Include="UiTestFixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WebElementObjects\RadioButtonSet.cs" />
+    <Compile Include="WebElementCollections\RadioButtonSet.cs" />
     <Compile Include="WebElementObjects\TextBox.cs" />
     <Compile Include="WebElementObjects\TextArea.cs" />
     <Compile Include="WebElementObjects\RadioButton.cs" />

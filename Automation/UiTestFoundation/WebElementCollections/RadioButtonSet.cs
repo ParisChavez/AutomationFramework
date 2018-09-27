@@ -18,7 +18,8 @@ namespace UiTestFoundation
         private readonly string _name;
 
         /// <summary>
-        /// Initializes a collection of radio buttons that are a set on the webpage.  These are linked by a common name attribute.  
+        /// Initializes a collection of radio buttons that are a set on the webpage.  These are linked by a common name attribute.
+        /// Value is assumed to exist on each input element, and is unique to each element
         /// </summary>
         /// <param name="searchContext"></param>
         /// <param name="name">Name is assumed to be unique on the page to this set.</param>
@@ -131,6 +132,26 @@ namespace UiTestFoundation
             {
                 _radioButtons[value].Selected = selected;
             }
+        }
+
+        /// <summary>
+        /// Checks that all buttons in the set are visible.
+        /// Not equivelent to !AllInvisible()
+        /// </summary>
+        /// <returns></returns>
+        public bool AllVisible()
+        {
+            return !RadioButtons.Any(rb => rb.Displayed == false);
+        }
+
+        /// <summary>
+        /// Checks that all buttons in the set are invisible.
+        /// Not equivelent to !AllVisible()
+        /// </summary>
+        /// <returns></returns>
+        public bool AllInvisible()
+        {
+            return !RadioButtons.Any(rb => rb.Displayed == true);
         }
     }
 }
