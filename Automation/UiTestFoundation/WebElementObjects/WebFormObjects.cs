@@ -3,22 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using TestFoundation;
 
 namespace UiTestFoundation
 {
+    public interface IRootHTML
+    {
+        Dictionary<string, string> Attributes { get; }
+        string GetAttributeValue(string attributeName);
+        string HTMLSource { get; }
+    }
+
     /// <summary>
     /// Abstract class for specific web form objects
     /// </summary>
-    public abstract class WebElementObject
+    public abstract class WebElementObject : IRootHTML
     {
         private IWebElement _element;
         private ISearchContext _searchContext { get; set; }
         private By _by { get; set; }
         private bool _staticObject { get; set; }
         protected string _creatingMethodName { get; set; }
+
+
+        /// <summary>
+        /// Provides access to HTML properties of this web element
+        /// </summary>
+        public IRootHTML RootHTML => (IRootHTML)this;
 
         /// <summary>
         /// If the object is set up to be dynamic, search for the element if it is null, or if it has become stale
@@ -225,6 +239,47 @@ namespace UiTestFoundation
                 messageBuilder.AppendLine($"Using locator: : \"{_by}\"");
             }
             return messageBuilder.ToString();
+        }
+
+        /// <summary>
+        /// Provides the value for the given attribute
+        /// </summary>
+        /// <param name="attributeName">the attribute to find the value of</param>
+        /// <returns></returns>
+        string IRootHTML.GetAttributeValue(string attributeName)
+        {
+            var test = RootHTML.Attributes;
+            return Element.GetAttribute(attributeName);
+        }
+
+        /// <summary>
+        /// The source HTML of the element represented here.
+        /// </summary>
+        string IRootHTML.HTMLSource
+        {
+            get
+            {
+                return Element.GetAttribute("outerHTML");
+            }
+        }
+
+
+        Dictionary<string, string> IRootHTML.Attributes
+        {
+            get
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(RootHTML.HTMLSource);
+                var attributes = doc.FirstChild.Attributes;
+
+                Dictionary<string, string> atts = new Dictionary<string, string>();
+                foreach (XmlAttribute att in attributes)
+                {
+                    atts.Add(att.Name, string.IsNullOrEmpty(att.Value) ? null : att.Value);
+                }
+
+                return null;
+            }
         }
     }
 }
